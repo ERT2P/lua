@@ -3,30 +3,23 @@
     =====
 ]]
 
-getgenv().BFUltra = getgenv().BFUltra or {}
-if getgenv().BFUltra.Loaded then
+getgenv().ERT2P = getgenv().ERT2P or {}
+if getgenv().ERT2P.Loaded then
     warn("[ERT2P] Already loaded. Restart Roblox to reload.")
     return
 end
-getgenv().BFUltra.Loaded = true
+getgenv().ERT2P.Loaded = true
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local TweenService = game:GetService("TweenService")
-local Lighting = game:GetService("Lighting")
 local LocalPlayer = Players.LocalPlayer
-local Camera = workspace.CurrentCamera
 
 local Settings = {
-    TeamCheck  = true,
     Speed      = 100,
     JumpPower  = 100,
     Slide      = false,
     SlideSpeed = 150,
-    Radar      = true,
-    RadarRange = 350,
-    FPSBoost   = false,
     HideKey    = Enum.KeyCode.K,
 }
 
@@ -49,28 +42,28 @@ local function applyStats()
     hum.JumpPower = Settings.JumpPower
 end
 
--- ================= GUI =================
+-- ================= GUI (BLUE THEME) =================
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "ERT2PGui"
 ScreenGui.ResetOnSpawn = false
 ScreenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
 local GUI_W = 280
-local GUI_H = 460
+local GUI_H = 350
 
 local Main = Instance.new("Frame")
 Main.Size = UDim2.fromOffset(GUI_W, GUI_H)
 Main.Position = UDim2.fromOffset(15, 150)
-Main.BackgroundColor3 = Color3.fromRGB(16, 16, 26)
+Main.BackgroundColor3 = Color3.fromRGB(15, 25, 45) -- لون خلفية أزرق غامق
 Main.BorderSizePixel = 2
-Main.BorderColor3 = Color3.fromRGB(255, 255, 255)
+Main.BorderColor3 = Color3.fromRGB(50, 130, 255) -- إطار أزرق فاتح
 Main.Active = true
 Main.Draggable = true
 Main.Parent = ScreenGui
 
 local TitleBar = Instance.new("Frame")
 TitleBar.Size = UDim2.new(1, 0, 0, 32)
-TitleBar.BackgroundColor3 = Color3.fromRGB(45, 45, 70)
+TitleBar.BackgroundColor3 = Color3.fromRGB(20, 60, 120) -- شريط العنوان أزرق مميز
 TitleBar.BorderSizePixel = 0
 TitleBar.Parent = Main
 
@@ -86,7 +79,7 @@ Title.Parent = TitleBar
 local MinimizeBtn = Instance.new("TextButton")
 MinimizeBtn.Size = UDim2.fromOffset(32, 32)
 MinimizeBtn.Position = UDim2.new(1, -32, 0, 0)
-MinimizeBtn.BackgroundColor3 = Color3.fromRGB(70, 70, 95)
+MinimizeBtn.BackgroundColor3 = Color3.fromRGB(30, 80, 160)
 MinimizeBtn.BorderSizePixel = 0
 MinimizeBtn.Text = "-"
 MinimizeBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -98,19 +91,19 @@ local function MakeSquareToggle(x, y, label)
     local btn = Instance.new("TextButton")
     btn.Size = UDim2.fromOffset(40, 40)
     btn.Position = UDim2.fromOffset(x, y)
-    btn.BackgroundColor3 = Color3.fromRGB(55, 55, 75)
+    btn.BackgroundColor3 = Color3.fromRGB(25, 50, 90)
     btn.BorderSizePixel = 2
-    btn.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    btn.BorderColor3 = Color3.fromRGB(80, 160, 255)
     btn.Text = ""
     btn.Parent = Main
 
     local inner = Instance.new("Frame")
     inner.Size = UDim2.fromOffset(24, 24)
     inner.Position = UDim2.new(0.5, -12, 0.5, -12)
-    inner.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    inner.BackgroundColor3 = Color3.fromRGB(80, 160, 255)
     inner.BackgroundTransparency = 1
     inner.BorderSizePixel = 2
-    inner.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    inner.BorderColor3 = Color3.fromRGB(80, 160, 255)
     inner.Parent = btn
 
     local lab = Instance.new("TextLabel")
@@ -119,7 +112,7 @@ local function MakeSquareToggle(x, y, label)
     lab.BackgroundTransparency = 1
     lab.Text = label .. " : OFF"
     lab.TextXAlignment = Enum.TextXAlignment.Left
-    lab.TextColor3 = Color3.fromRGB(255, 255, 255)
+    lab.TextColor3 = Color3.fromRGB(200, 225, 255)
     lab.Font = Enum.Font.GothamBold
     lab.TextScaled = true
     lab.Parent = Main
@@ -138,7 +131,7 @@ local function MakeLabel(x, y, text)
     l.BackgroundTransparency = 1
     l.Text = text
     l.TextXAlignment = Enum.TextXAlignment.Left
-    l.TextColor3 = Color3.fromRGB(200, 200, 255)
+    l.TextColor3 = Color3.fromRGB(150, 200, 255)
     l.Font = Enum.Font.GothamBold
     l.TextScaled = true
     l.Parent = Main
@@ -149,9 +142,9 @@ local function MakeMinus(x, y)
     local b = Instance.new("TextButton")
     b.Size = UDim2.fromOffset(40, 40)
     b.Position = UDim2.fromOffset(x, y)
-    b.BackgroundColor3 = Color3.fromRGB(85, 45, 45)
+    b.BackgroundColor3 = Color3.fromRGB(30, 60, 90)
     b.BorderSizePixel = 2
-    b.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    b.BorderColor3 = Color3.fromRGB(80, 160, 255)
     b.Text = "-"
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
     b.Font = Enum.Font.GothamBold
@@ -164,9 +157,9 @@ local function MakePlus(x, y)
     local b = Instance.new("TextButton")
     b.Size = UDim2.fromOffset(40, 40)
     b.Position = UDim2.fromOffset(x, y)
-    b.BackgroundColor3 = Color3.fromRGB(45, 85, 45)
+    b.BackgroundColor3 = Color3.fromRGB(20, 90, 60)
     b.BorderSizePixel = 2
-    b.BorderColor3 = Color3.fromRGB(255, 255, 255)
+    b.BorderColor3 = Color3.fromRGB(80, 255, 160)
     b.Text = "+"
     b.TextColor3 = Color3.fromRGB(255, 255, 255)
     b.Font = Enum.Font.GothamBold
@@ -181,7 +174,7 @@ local function MakeValue(x, y, text, w)
     v.Position = UDim2.fromOffset(x, y)
     v.BackgroundTransparency = 1
     v.Text = text
-    v.TextColor3 = Color3.fromRGB(120, 255, 120)
+    v.TextColor3 = Color3.fromRGB(100, 220, 255)
     v.Font = Enum.Font.GothamBold
     v.TextScaled = true
     v.Parent = Main
@@ -201,12 +194,6 @@ local JumpPlus  = MakePlus(185, 84)
 
 local SlideBtn, SlideInner, SlideLabel = MakeSquareToggle(10, 130, "SLIDE")
 
-local RadarBtn, RadarInner, RadarLabel = MakeSquareToggle(10, 176, "RADAR")
-SetSquare(RadarInner, true)
-RadarLabel.Text = "RADAR : ON"
-
-local FPSBtn, FPSInner, FPSLabel = MakeSquareToggle(10, 222, "FPS BOOST")
-
 -- ============ CODES ============
 local defaultCodes = {
     "SUBSCRIBED", "ENZOS", "TYPHOON", "KITT", "DRAGONABUSE",
@@ -215,10 +202,10 @@ local defaultCodes = {
 
 local CodeBox = Instance.new("TextBox")
 CodeBox.Size = UDim2.fromOffset(140, 30)
-CodeBox.Position = UDim2.fromOffset(10, 276)
-CodeBox.BackgroundColor3 = Color3.fromRGB(30, 30, 45)
+CodeBox.Position = UDim2.fromOffset(10, 184)
+CodeBox.BackgroundColor3 = Color3.fromRGB(20, 35, 60)
 CodeBox.BorderSizePixel = 2
-CodeBox.BorderColor3 = Color3.fromRGB(255, 255, 255)
+CodeBox.BorderColor3 = Color3.fromRGB(80, 160, 255)
 CodeBox.Text = table.concat(defaultCodes, ", ")
 CodeBox.TextColor3 = Color3.fromRGB(255, 255, 255)
 CodeBox.Font = Enum.Font.Code
@@ -227,8 +214,8 @@ CodeBox.Parent = Main
 
 local RedeemBtn = Instance.new("TextButton")
 RedeemBtn.Size = UDim2.fromOffset(110, 30)
-RedeemBtn.Position = UDim2.fromOffset(158, 276)
-RedeemBtn.BackgroundColor3 = Color3.fromRGB(60, 60, 160)
+RedeemBtn.Position = UDim2.fromOffset(158, 184)
+RedeemBtn.BackgroundColor3 = Color3.fromRGB(30, 100, 200)
 RedeemBtn.BorderSizePixel = 2
 RedeemBtn.BorderColor3 = Color3.fromRGB(255, 255, 255)
 RedeemBtn.Text = "REDEEM"
@@ -239,18 +226,18 @@ RedeemBtn.Parent = Main
 
 local CodeStatus = Instance.new("TextLabel")
 CodeStatus.Size = UDim2.new(1, -20, 0, 18)
-CodeStatus.Position = UDim2.fromOffset(10, 312)
+CodeStatus.Position = UDim2.fromOffset(10, 220)
 CodeStatus.BackgroundTransparency = 1
 CodeStatus.Text = "Paste codes then REDEEM."
-CodeStatus.TextColor3 = Color3.fromRGB(255, 200, 120)
+CodeStatus.TextColor3 = Color3.fromRGB(150, 210, 255)
 CodeStatus.Font = Enum.Font.Gotham
 CodeStatus.TextScaled = true
 CodeStatus.Parent = Main
 
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Size = UDim2.new(1, -20, 0, 30)
-CloseBtn.Position = UDim2.fromOffset(10, 336)
-CloseBtn.BackgroundColor3 = Color3.fromRGB(85, 40, 40)
+CloseBtn.Position = UDim2.fromOffset(10, 246)
+CloseBtn.BackgroundColor3 = Color3.fromRGB(120, 40, 40)
 CloseBtn.BorderSizePixel = 2
 CloseBtn.BorderColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.Text = "HIDE GUI  [K]"
@@ -258,86 +245,6 @@ CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.Font = Enum.Font.GothamBold
 CloseBtn.TextScaled = true
 CloseBtn.Parent = Main
-
--- ============ RADAR ============
-local RadarFrame = Instance.new("Frame")
-RadarFrame.Size = UDim2.fromOffset(170, 170)
-RadarFrame.Position = UDim2.new(1, -185, 1, -195)
-RadarFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-RadarFrame.BackgroundTransparency = 0.3
-RadarFrame.BorderSizePixel = 2
-RadarFrame.BorderColor3 = Color3.fromRGB(255, 255, 255)
-RadarFrame.Parent = ScreenGui
-
-local RadarTitle = Instance.new("TextLabel")
-RadarTitle.Size = UDim2.new(1, 0, 0, 20)
-RadarTitle.BackgroundTransparency = 1
-RadarTitle.Text = "RADAR"
-RadarTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-RadarTitle.Font = Enum.Font.GothamBold
-RadarTitle.TextScaled = true
-RadarTitle.Parent = RadarFrame
-
-local MeDot = Instance.new("Frame")
-MeDot.Size = UDim2.fromOffset(6, 6)
-MeDot.Position = UDim2.new(0.5, -3, 0.5, -3)
-MeDot.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-MeDot.BorderSizePixel = 0
-MeDot.Parent = RadarFrame
-
-local RadarDots = {}
-
-local function UpdateRadar()
-    local hrp = getHRP()
-    if not hrp then return end
-    local myPos = hrp.Position
-    local look = hrp.CFrame.LookVector
-    local angle = math.atan2(-look.X, -look.Z)
-    local cx = RadarFrame.AbsoluteSize.X / 2
-    local cz = RadarFrame.AbsoluteSize.Y / 2
-    local scale = (cx - 10) / Settings.RadarRange
-
-    for _, plr in ipairs(Players:GetPlayers()) do
-        if plr == LocalPlayer then continue end
-        local c = plr.Character
-        local tHRP = c and c:FindFirstChild("HumanoidRootPart")
-        local dot = RadarDots[plr]
-
-        if not tHRP then
-            if dot then dot.Visible = false end
-            continue
-        end
-
-        if not dot then
-            dot = Instance.new("Frame")
-            dot.Size = UDim2.fromOffset(8, 8)
-            dot.BackgroundColor3 = (plr.Team == LocalPlayer.Team) and Color3.fromRGB(80, 200, 255) or Color3.fromRGB(255, 80, 80)
-            dot.BorderSizePixel = 0
-            dot.ZIndex = 5
-            dot.Parent = RadarFrame
-            RadarDots[plr] = dot
-        end
-
-        local rel = tHRP.Position - myPos
-        local dist = rel.Magnitude
-        if dist <= Settings.RadarRange then
-            local rx = rel.X * math.cos(angle) - rel.Z * math.sin(angle)
-            local rz = rel.X * math.sin(angle) + rel.Z * math.cos(angle)
-            dot.Visible = true
-            dot.Position = UDim2.fromOffset(cx + rx * scale - 4, cz + rz * scale - 4)
-        else
-            dot.Visible = false
-        end
-    end
-end
-
-Players.PlayerRemoving:Connect(function(plr)
-    local dot = RadarDots[plr]
-    if dot then
-        dot:Destroy()
-        RadarDots[plr] = nil
-    end
-end)
 
 -- ============ TOGGLES ============
 local SlideVel = nil
@@ -352,38 +259,7 @@ local function ToggleSlide()
     end
 end
 
-local function ToggleRadar()
-    Settings.Radar = not Settings.Radar
-    SetSquare(RadarInner, Settings.Radar)
-    RadarLabel.Text = "RADAR : " .. (Settings.Radar and "ON" or "OFF")
-end
-
-local savedGFX = { QualityLevel = nil, Shadows = nil }
-local function ToggleFPS()
-    Settings.FPSBoost = not Settings.FPSBoost
-    SetSquare(FPSInner, Settings.FPSBoost)
-    FPSLabel.Text = "FPS BOOST : " .. (Settings.FPSBoost and "ON" or "OFF")
-    pcall(function()
-        if Settings.FPSBoost then
-            if savedGFX.QualityLevel == nil then
-                savedGFX.QualityLevel = settings().Rendering.QualityLevel
-                savedGFX.Shadows = Lighting.GlobalShadows
-            end
-            settings().Rendering.QualityLevel = 1
-            Lighting.GlobalShadows = false
-        else
-            if savedGFX.QualityLevel then
-                settings().Rendering.QualityLevel = savedGFX.QualityLevel
-                Lighting.GlobalShadows = savedGFX.Shadows
-                savedGFX.QualityLevel = nil
-            end
-        end
-    end)
-end
-
 SlideBtn.MouseButton1Click:Connect(ToggleSlide)
-RadarBtn.MouseButton1Click:Connect(ToggleRadar)
-FPSBtn.MouseButton1Click:Connect(ToggleFPS)
 
 local function BindValueRow(minusBtn, plusBtn, valueLabel, varName, step, minV, maxV)
     minusBtn.MouseButton1Click:Connect(function()
@@ -469,13 +345,6 @@ RunService.RenderStepped:Connect(function()
         SlideVel:Destroy()
         SlideVel = nil
     end
-
-    if Settings.Radar then
-        RadarFrame.Visible = true
-        UpdateRadar()
-    else
-        RadarFrame.Visible = false
-    end
 end)
 
 LocalPlayer.CharacterAdded:Connect(function()
@@ -483,4 +352,4 @@ LocalPlayer.CharacterAdded:Connect(function()
     applyStats()
 end)
 
-print("[ERT2P] Loaded successfully.")
+print("[ERT2P] Loaded successfully with Blue Theme.")
